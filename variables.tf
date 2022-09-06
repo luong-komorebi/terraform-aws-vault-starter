@@ -111,6 +111,7 @@ variable "private_subnet_ids" {
 
 variable "public_subnet_ids" {
   type        = list(string)
+  default     = []
   description = "Subnet IDs to deploy Vault LB into if Vault lb is external"
 }
 
