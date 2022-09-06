@@ -51,8 +51,10 @@ module "vault" {
   common_tags           = var.common_tags
   leader_tls_servername = module.quickstart.leader_tls_servername
   lb_certificate_arn    = module.quickstart.lb_certificate_arn
+  lb_internal           = true
   permissions_boundary  = var.permissions_boundary
   private_subnet_ids    = module.quickstart.private_subnet_ids
+  public_subnet_ids     = module.quickstart.public_subnet_ids
   resource_name_prefix  = var.resource_name_prefix
   secrets_manager_arn   = module.quickstart.secrets_manager_arn
   vpc_id                = module.quickstart.vpc_id

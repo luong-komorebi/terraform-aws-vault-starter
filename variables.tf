@@ -80,6 +80,12 @@ variable "lb_type" {
   }
 }
 
+variable "lb_internal" {
+  description = "This variable should be true if we wish to create a public load balancer."
+  type        = bool
+  default     = true
+}
+
 variable "node_count" {
   type        = number
   default     = 5
@@ -95,6 +101,11 @@ variable "permissions_boundary" {
 variable "private_subnet_ids" {
   type        = list(string)
   description = "Subnet IDs to deploy Vault into"
+}
+
+variable "public_subnet_ids" {
+  type        = list(string)
+  description = "Subnet IDs to deploy Vault LB into if Vault lb is external"
 }
 
 variable "resource_name_prefix" {
