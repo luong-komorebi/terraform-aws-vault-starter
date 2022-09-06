@@ -86,6 +86,12 @@ variable "lb_internal" {
   default     = true
 }
 
+variable "lb_listener_port" {
+  type        = number
+  default     = 8200
+  description = "Load balancer listener port where Vault would be accessible"
+}
+
 variable "node_count" {
   type        = number
   default     = 5

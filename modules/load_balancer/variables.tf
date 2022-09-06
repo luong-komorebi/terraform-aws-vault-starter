@@ -43,6 +43,18 @@ variable "lb_type" {
   type        = string
 }
 
+variable "lb_internal" {
+  description = "This variable should be true if we wish to create a public load balancer."
+  type        = bool
+  default     = true
+}
+
+variable "lb_listener_port" {
+  type        = number
+  default     = 8200
+  description = "Load balancer listener port where Vault would be accessible"
+}
+
 variable "resource_name_prefix" {
   type        = string
   description = "Resource name prefix used for tagging and naming AWS resources"
@@ -61,10 +73,4 @@ variable "vault_sg_id" {
 variable "vpc_id" {
   type        = string
   description = "VPC ID where Vault will be deployed"
-}
-
-variable "lb_listener_port" {
-  type        = number
-  default     = 8200
-  description = "Load balancer listener port where Vault would be accessible"
 }
