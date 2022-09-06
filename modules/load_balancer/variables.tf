@@ -62,3 +62,9 @@ variable "vpc_id" {
   type        = string
   description = "VPC ID where Vault will be deployed"
 }
+
+variable "lb_listener_port" {
+  type        = number
+  default     = 8200
+  description = "Load balancer listener port where Vault would be accessible"
+}
