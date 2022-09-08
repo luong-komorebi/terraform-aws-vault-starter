@@ -41,7 +41,7 @@ resource "aws_security_group_rule" "vault_lb_outbound" {
 
 locals {
   lb_security_groups = var.lb_type == "network" ? null : [aws_security_group.vault_lb[0].id]
-  lb_protocol        = var.lb_type == "network" ? "TCP" : "HTTPS"
+  lb_protocol        = var.lb_type == "network" ? "TLS" : "HTTPS"
 }
 
 resource "aws_lb" "vault_lb" {
@@ -85,8 +85,8 @@ resource "aws_lb_listener" "vault" {
   load_balancer_arn = aws_lb.vault_lb.id
   port              = 8200
   protocol          = local.lb_protocol
-  ssl_policy        = local.lb_protocol == "HTTPS" ? var.ssl_policy : null
-  certificate_arn   = local.lb_protocol == "HTTPS" ? var.lb_certificate_arn : null
+  ssl_policy        = var.ssl_policy
+  certificate_arn   = var.lb_certificate_arn
 
   default_action {
     type             = "forward"
