@@ -61,6 +61,13 @@ module "user_data" {
   vault_version               = var.vault_version
 }
 
+module "backup_provider" {
+  source = "./modules/backup_provider"
+
+  resource_name_prefix = var.resource_name_prefix
+  aws_instance_role_id = module.iam.aws_iam_instance_role_id
+}
+
 locals {
   vault_target_group_arns = concat(
     [module.loadbalancer.vault_target_group_arn],

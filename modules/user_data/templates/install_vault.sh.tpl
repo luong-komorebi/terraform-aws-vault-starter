@@ -76,8 +76,60 @@ chmod 640 /etc/vault.d/vault.hcl
 systemctl enable vault
 systemctl start vault
 
-echo "Setup Vault profile"
+echo "Setup Vault profile" 
 cat <<PROFILE | sudo tee /etc/profile.d/vault.sh
 export VAULT_ADDR="https://127.0.0.1:8200"
 export VAULT_CACERT="/opt/vault/tls/vault-ca.pem"
 PROFILE
+
+echo "Download Vault automated backup task"
+wget https://github.com/luong-komorebi/vault_raft_snapshot_agent/releases/download/custom_0.0.1/vault_raft_snapshot_agent
+chmod +x vault_raft_snapshot_agent
+sudo mv vault_raft_snapshot_agent /usr/local/bin/vault_raft_snapshot_agent
+
+echo "Create systemd service for backup task"
+sudo tee /etc/systemd/system/vault-snapshot.service <<EOF
+[Unit]
+Description="An Open Source Snapshot Service for Raft"
+Documentation=https://github.com/Lucretius/vault_raft_snapshot_agent/
+Requires=network-online.target
+After=network-online.target
+ConditionFileNotEmpty=/etc/vault.d/snapshot.json
+[Service]
+Type=simple
+User=vault
+Group=vault
+ExecStart=/usr/local/bin/vault_raft_snapshot_agent
+ExecReload=/usr/local/bin/vault_raft_snapshot_agent
+KillMode=process
+Restart=on-failure
+LimitNOFILE=65536
+[Install]
+WantedBy=multi-user.target
+EOF
+
+echo "Create vault policy for taking snapshot"
+tee snapshot_policy.hcl <<EOF
+path "/sys/storage/raft/snapshot"
+{
+  capabilities = ["read"]
+}
+EOF
+
+# use the above result to create a snapshot configuration
+echo "Create snapshot configurations"
+sudo tee /etc/vault.d/snapshot.json <<EOF
+{
+   "retain":10,
+   "frequency":"1h",
+   "role_id": "62cd6d5f-b088-b5cf-8baa-86c067b0cbf0",
+   "secret_id": "640ac304-51b0-16dd-5d38-1793226bc77c",
+   "aws_storage":{
+      "s3_region":"us-west-2",
+      "s3_bucket":"${name}-vault-snapshots"
+   }
+}
+EOF
+
+systemctl enable vault-snapshot
+systemctl start vault-snapshot
