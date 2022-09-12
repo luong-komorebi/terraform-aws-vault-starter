@@ -41,3 +41,8 @@ output "vault_sg_id" {
   description = "Security group ID of Vault cluster"
   value       = module.vm.vault_sg_id
 }
+
+output "vault_instance_role_id" {
+  description = "The role that Vault created for internal operations with AWS"
+  value       = module.iam.aws_iam_instance_role_id
+}

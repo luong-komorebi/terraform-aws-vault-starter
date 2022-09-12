@@ -8,3 +8,8 @@
 output "aws_iam_instance_profile" {
   value = aws_iam_instance_profile.vault.name
 }
+
+output "aws_iam_instance_role_id" {
+  description = "The role that Vault created for internal operations with AWS"
+  value       = aws_iam_role.instance_role[0].id
+}
